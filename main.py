@@ -108,13 +108,15 @@ class NeuralNetwork:
             dW2 += reg * self.W2
             dW1 += reg * self.W1
 
+            eta_decay = eta / (1 + 0.001 * i)
+
             # Update params
-            self.W1 += -eta*dW1
-            self.W2 += -eta*dW2
-            self.b1 += -eta*db1
-            self.b2 += -eta*db2
+            self.W1 += -eta_decay*dW1
+            self.W2 += -eta_decay*dW2
+            self.b1 += -eta_decay*db1
+            self.b2 += -eta_decay*db2
         
-        print(f"Finished Training")
+        print(f"=== Finished Training ==============================")
 
     def predict(self, x):
         # Forward prop
@@ -233,11 +235,17 @@ start = time.time()
 generate_training_data()
 # training data can be loaded/exported
 points, labels = load_training_data()
-neural_net.train(points, labels, reg=1e-2, epochs=10000, eta=0.1) # reg=1e-3
+
+print("Starting Training ==================================")
+
+neural_net.train(points, labels, reg=1e-2, epochs=10000, eta=1) # reg=1e-3, eta=1 OR 0.1 OR 0.01
+
+print("Training finished in %.2f seconds" % (time.time()-start))
+print("Training accuracy: %.4f" % (np.mean(np.array(neural_net.predict(points))==labels)))
+print("====================================================")
+
 # once the model has been trained, parameters can be exported to give the same results without retraining (could also keep the parameters with the most accuracy)
 neural_net.export_parameters("./params.txt")
-print("Training finished in %.2f seconds" % ({time.time()-start}))
-print("Training accuracy: %.4f" % (np.mean(np.array(neural_net.predict(points))==labels)))
 
 # testing a random input
 test_random_input(neural_net)
