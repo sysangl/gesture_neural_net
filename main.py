@@ -1,6 +1,14 @@
 import numpy as np
 import string
 
+# Activation Functions
+def sigmoid(x):
+    return 1.0 / (1.0 + np.exp(-x))
+def tanh(x):
+    return 2*sigmoid(2*x)-1
+def softplus(x):
+    return np.log(1+np.exp(x))
+
 class NeuralNetwork:
     def __init__(self, n_features,n_classes,n_hidden):
         # Num of features
@@ -26,7 +34,9 @@ class NeuralNetwork:
         # (Input > Hidden) Multiply weight with values and adidng bias term b1
         z1 = np.dot(x,self.W1)+self.b1
         # Apply ReLu activation fucntion to z1, this function returns z1 if positive else returns 0 if z1 is negative.
-        A1 = np.maximum(0,z1)
+        #A1 = np.maximum(0,z1)
+        # Instead of ReLu, use Sigmoid actiavgtion
+        A1 = sigmoid(z1)
 
         # (Hidden > Output) Multiply weight with values and adding bias term b2
         z2 = np.dot(A1,self.W2)+self.b2
@@ -37,9 +47,12 @@ class NeuralNetwork:
         #A2 = A2/np.sum(A2,axis=1,keepdims=True)
 
         # More stable Softmax activation
-        z2 -= np.max(z2, axis=1, keepdims=True)
-        A2 = np.exp(z2)
-        A2 /= np.sum(A2, axis=1, keepdims=True)
+        #z2 -= np.max(z2, axis=1, keepdims=True)
+        #A2 = np.exp(z2)
+        #A2 /= np.sum(A2, axis=1, keepdims=True)
+
+        # Softplus activation
+        A2 = softplus(z2)
 
         return A1, A2
     
@@ -108,13 +121,13 @@ class NeuralNetwork:
             dW2 += reg * self.W2
             dW1 += reg * self.W1
 
-            eta_decay = eta / (1 + 0.001 * i)
+            #eta_decay = eta / (1 + 0.0001 * i)
 
-            # Update params
-            self.W1 += -eta_decay*dW1
-            self.W2 += -eta_decay*dW2
-            self.b1 += -eta_decay*db1
-            self.b2 += -eta_decay*db2
+            # Update params (change eta to eta_decay when using decay)
+            self.W1 += -eta*dW1
+            self.W2 += -eta*dW2
+            self.b1 += -eta*db1
+            self.b2 += -eta*db2
         
         print(f"=== Finished Training ==============================")
 
@@ -232,13 +245,13 @@ def test_random_input(neural_net):
 import time
 start = time.time()
 
-generate_training_data()
+#generate_training_data()
 # training data can be loaded/exported
 points, labels = load_training_data()
 
 print("Starting Training ==================================")
 
-neural_net.train(points, labels, reg=1e-2, epochs=10000, eta=1) # reg=1e-3, eta=1 OR 0.1 OR 0.01
+neural_net.train(points, labels, reg=1e-2, epochs=1000, eta=1) # reg=1e-3, eta=1 OR 0.1 OR 0.01
 
 print("Training finished in %.2f seconds" % (time.time()-start))
 print("Training accuracy: %.4f" % (np.mean(np.array(neural_net.predict(points))==labels)))
