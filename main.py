@@ -166,6 +166,9 @@ class NeuralNetwork:
 
 neural_net = NeuralNetwork(n_features=5,n_classes=26,n_hidden=100)
 
+
+# AI generated code, this data would be replaced with actual data from sensors and labeled manually
+# could try to find a way to automate this, but data would still have to be created
 def generate_training_data(fp = "./dataset.txt"):
     np.random.seed(42)
     num_categories = 26
@@ -223,14 +226,18 @@ def test_random_input(neural_net):
     return sample, label, confidence
 
 
+# just to time the training duration
 import time
-
 start = time.time()
 
 generate_training_data()
+# training data can be loaded/exported
 points, labels = load_training_data()
 neural_net.train(points, labels, reg=1e-2, epochs=10000, eta=0.1) # reg=1e-3
+# once the model has been trained, parameters can be exported to give the same results without retraining (could also keep the parameters with the most accuracy)
 neural_net.export_parameters("./params.txt")
-print(f"Training finished in {time.time()-start}")
+print("Training finished in %.2f seconds" % ({time.time()-start}))
 print("Training accuracy: %.4f" % (np.mean(np.array(neural_net.predict(points))==labels)))
+
+# testing a random input
 test_random_input(neural_net)
