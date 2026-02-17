@@ -1,4 +1,4 @@
-![[time badge or smth]](https://hackatime-badge.hackclub.com/U0A0HQ4TYJX/gesture_neural_net
+![[time badge or smth]](https://hackatime-badge.hackclub.com/U0A0HQ4TYJX/gesture_neural_net)
 
 A neural network that takes in readings from servos/flex sensors and categorises them into A-Z
 
